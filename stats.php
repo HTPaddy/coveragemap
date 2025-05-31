@@ -28,5 +28,5 @@ $shiny = $stmt2->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 ]);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'DB Fehler: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'DB error: ' . $e->getMessage()]);
 }

@@ -254,7 +254,7 @@ input:checked + .slider:before {
     </div>
       <?php if (!empty($config['locations'])): ?>
     <div class="dropdown">
-  <button id="location-toggle" class="menu-toggle">📍 Stadt Wählen</button>
+  <button id="location-toggle" class="menu-toggle">📍 City selection</button>
   <div id="location-menu" class="dropdown-menu">
     <?php foreach ($config['locations'] as $loc): ?>
       <div class="dropdown-item" data-lat="<?= $loc['lat'] ?>" data-lng="<?= $loc['lng'] ?>">
@@ -272,21 +272,21 @@ input:checked + .slider:before {
   </header>
 
   <div class="panel" id="stats-panel">
-    <h3>Tages Statistik</h3>
-    <div id="stat-time">⏳ Lade...</div>
+    <h3>Daily Stats</h3>
+    <div id="stat-time">⏳ Loading...</div>
     <div><strong>💯 Pokemon:</strong> <span id="stat-hundo">-</span></div>
     <div><strong>✨ Pokemon:</strong> <span id="stat-shiny">-</span></div>
   </div>
 
   <div class="sidebar" id="sidebar">
-    <h3>Gebiete</h3>
+    <h3>Areas</h3>
     <input type="text" id="search" placeholder="Suchen..." />
     <div class="slider-toggle-wrapper">
   <label class="switch">
     <input type="checkbox" id="toggle-all" checked>
     <span class="slider round"></span>
   </label>
-  <span id="toggle-all-label">Alle Gebiete anzeigen</span>
+  <span id="toggle-all-label">Show all areas</span>
 </div>
     <ul id="geofence-list"></ul>
   </div>
