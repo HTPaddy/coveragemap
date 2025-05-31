@@ -1,3 +1,6 @@
+Scroll down for the english version of this README
+--------------------------------------------------------------------------------------------------
+
 # 🗺️ Geofence Map
 
 Ein responsives, konfigurierbares Webtool zum Anzeigen von Geofences aus einer API – mit Unterstützung für:
