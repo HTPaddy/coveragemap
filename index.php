@@ -254,7 +254,7 @@ input:checked + .slider:before {
     </div>
       <?php if (!empty($config['locations'])): ?>
     <div class="dropdown">
-  <button id="location-toggle" class="menu-toggle">📍 Select City</button>
+  <button id="location-toggle" class="menu-toggle">📍 Stadt Wählen</button>
   <div id="location-menu" class="dropdown-menu">
     <?php foreach ($config['locations'] as $loc): ?>
       <div class="dropdown-item" data-lat="<?= $loc['lat'] ?>" data-lng="<?= $loc['lng'] ?>">
@@ -272,8 +272,8 @@ input:checked + .slider:before {
   </header>
 
   <div class="panel" id="stats-panel">
-    <h3>Daily Statistics</h3>
-    <div id="stat-time">⏳ Loading...</div>
+    <h3>Tages Statistik</h3>
+    <div id="stat-time">⏳ Lade...</div>
     <div><strong>💯 Pokemon:</strong> <span id="stat-hundo">-</span></div>
     <div><strong>✨ Pokemon:</strong> <span id="stat-shiny">-</span></div>
   </div>
@@ -286,7 +286,7 @@ input:checked + .slider:before {
     <input type="checkbox" id="toggle-all" checked>
     <span class="slider round"></span>
   </label>
-  <span id="toggle-all-label">Show all areas</span>
+  <span id="toggle-all-label">Alle Gebiete anzeigen</span>
 </div>
     <ul id="geofence-list"></ul>
   </div>
@@ -405,7 +405,7 @@ document.getElementById('toggle-all').addEventListener('click', () => {
     if (cb) cb.checked = allVisible;
   });
   drawAllVisible();
-  document.getElementById('toggle-all').textContent = allVisible ? 'disable all areas' : 'enable all areas';
+  document.getElementById('toggle-all').textContent = allVisible ? 'Alle ausblenden' : 'Alle einblenden';
 });
 
 document.getElementById('location-toggle')?.addEventListener('click', () => {
@@ -430,18 +430,19 @@ document.addEventListener('click', e => {
 
 let tapTimeout;
 
-map.getContainer().addEventListener('touchend', function(e) {
-  // Nur 1 Finger, keine Bewegung
-  if (e.touches.length === 0 && e.changedTouches.length === 1) {
-    if (tapTimeout) {
-      clearTimeout(tapTimeout);
-    }
+let lastTap = 0;
 
-    tapTimeout = setTimeout(() => {
-      const zoom = map.getZoom();
-      map.setZoom(zoom + 1);
-    }, 150);
+map.getContainer().addEventListener('touchend', function (e) {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTap;
+
+  if (tapLength < 300 && tapLength > 0) {
+    // Doppel-Tipp erkannt
+    map.zoomIn();
+    e.preventDefault();
   }
+
+  lastTap = currentTime;
 });
   </script>
 </body>
