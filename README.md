@@ -10,6 +10,7 @@ Ein responsives, konfigurierbares Webtool zum Anzeigen von Geofences aus einer A
 - 🔲 Ein-/Ausblendung einzelner Gebiete
 - 📱 Touch- und Mobile-Unterstützung
 - für die Anzeige eurer Gebiete benötigt Ihr Koji: [📍 Koji](https://github.com/TurtIeSocks/Koji)
+- bitte beachtet das bei überlagernde Geofences, nur die Oberste klickbar ist
 
 ## 📊 Statistik
 
@@ -40,11 +41,11 @@ Einfach lokal mit PHP starten:
 php -S localhost:8000
 ```
 
-Dann aufrufen: [http://localhost:8000](http://localhost:8000)
+```Docker:
+Dann aufrufen: http://localhost:8000/ -> http://localhost:80 
+``` 
 
-## 📩 Feedback oder Fragen?
-
-Einfach in Discord oder direkt melden – 😊
+Danke an [ReuschelCGN](https://github.com/ReuschelCGN) für die Docker files
 
 ------------------------------------------------------------------------------------------------
 
@@ -57,6 +58,7 @@ A responsive, configurable web tool for displaying geofences from an API – wit
 - 🔲 Toggle individual areas on/off  
 - 📱 Touch and mobile support  
 - you also need Koji for your areas: [📍 Koji](https://github.com/TurtIeSocks/Koji)
+- if you have overlapping geofences only the top one will be clickable
 
 ## 📊 Statistics
 
@@ -85,3 +87,10 @@ Easily start it locally with PHP:
 
 ```bash
 php -S localhost:8000
+
+for Docker you use
+http://localhost:8000/ -> http://localhost:80
+```
+
+Thanks to [ReuschelCGN](https://github.com/ReuschelCGN) for the docker files
+Main idea of this comes from [VersX](https://github.com/versx)

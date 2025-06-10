@@ -1,0 +1,13 @@
+version: '2.4'
+services:
+  coveragemap:
+    build:
+      context: ./coveragemap
+    container_name: coveragemap
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./coveragemap/config.php:/var/www/html/config.php
+    ports:
+      - 80:80
