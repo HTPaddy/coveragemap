@@ -10,6 +10,8 @@ return [
     'default_lat' => 00.000000,
     'default_lng' => 00.00000,
     'default_zoom' => 10,
+    'date_format' => 'EU', // or 'US'
+    'time_format' => '24h', // or '12h'
 //  if you have multiple locations, you can make them visible via menu with this config
 //  'locations' => [    
 //  ['name' => 'City1', 'lat' => 52.52, 'lng' => 13.405, 'zoom' => 10],

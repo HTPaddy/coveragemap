@@ -49,9 +49,12 @@ try {
         $total_area = null; 
     }
 
-    echo json_encode([
-        'date' => date('d.m.Y'),
-        'time' => date('H:i:s'),
+$format = $config['date_format'] === 'US' ? 'm/d/Y' : 'd.m.Y';
+$timeFormat = $config['time_format'] === '12h' ? 'h:i A' : 'H:i:s';
+
+echo json_encode([
+    'date' => date($format),
+    'time' => date('H:i:s'),
         'hundo' => number_format($hundo),
         'shiny' => number_format($shiny),
         'total_world' => $total_world !== null ? number_format($total_world) : null,
