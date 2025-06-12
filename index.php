@@ -148,24 +148,57 @@ $features = loadCachedAreas($config);
     }
     input:checked + .slider { background-color: #0077cc; }
     input:checked + .slider:before { transform: translateX(22px); }
+
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 3000;
+      padding: 5px 0;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+    .dropdown.open .dropdown-menu { display: block; }
+    .dropdown-item {
+      padding: 8px 15px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .dropdown-item:hover { background: #f0f0f0; }
   </style>
 </head>
 <body>
   <header>
-    <div>
+    <div style="display: flex; align-items: center; gap: 15px;">
       <?php if ($logo): ?>
         <img src="<?= htmlspecialchars($logo) ?>" alt="Logo" />
       <?php else: ?>
         <strong><?= htmlspecialchars($title) ?></strong>
       <?php endif; ?>
+
+      <?php if (!empty($config['locations'])): ?>
+        <div class="dropdown">
+          <button id="location-toggle" class="menu-toggle">📍 Select a City</button>
+          <div id="location-menu" class="dropdown-menu">
+            <?php foreach ($config['locations'] as $loc): ?>
+              <div class="dropdown-item" data-lat="<?= $loc['lat'] ?>" data-lng="<?= $loc['lng'] ?>">
+                <?= htmlspecialchars($loc['name']) ?>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      <?php endif; ?>
     </div>
+
     <div class="header-buttons">
       <button class="menu-toggle" id="stat-btn" onclick="toggleStats(this)">📊</button>
       <button class="menu-toggle" id="dark-btn" onclick="toggleDark(this)">🌙</button>
       <button class="menu-toggle" id="menu-btn" onclick="toggleSidebar(this)">☰</button>
     </div>
   </header>
-
   <div class="panel" id="stats-panel">
     <h3>Daily Stats</h3>
     <div id="stat-time">⏳ Loading...</div>
@@ -326,6 +359,31 @@ $features = loadCachedAreas($config);
       }
       lastTap = currentTime;
     });
+    // Dropdown-Menü für Stadtwahl
+const locationToggle = document.getElementById('location-toggle');
+const locationMenu = document.getElementById('location-menu');
+
+if (locationToggle && locationMenu) {
+  locationToggle.addEventListener('click', () => {
+    locationMenu.style.display = locationMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const lat = parseFloat(item.dataset.lat);
+      const lng = parseFloat(item.dataset.lng);
+      map.setView([lat, lng], 13); // Zoomstufe kannst du anpassen
+      locationMenu.style.display = 'none';
+    });
+  });
+
+  // Menü schließen, wenn man außerhalb klickt
+  document.addEventListener('click', (e) => {
+    if (!locationMenu.contains(e.target) && !locationToggle.contains(e.target)) {
+      locationMenu.style.display = 'none';
+    }
+  });
+}
   </script>
 </body>
 </html>
