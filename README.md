@@ -19,7 +19,7 @@ Zeigt für den aktuellen Tag:
 - Anzahl gescannter **Shiny Pokémon**
 
 Datenquelle: `pokemon_hundo_stats` und `pokemon_shiny_stats` mit Feldern `date` und `count`.
-Diese CoverageMap ist nur kompatibel [📍 Golbat](https://github.com/UnownHash/Golbat)
+Die Stats der CoverageMap sind nur kompatibel mit [📍 Golbat](https://github.com/UnownHash/Golbat)
 
 ## 📱 Mobile Features
 
@@ -67,7 +67,7 @@ Displays for the current day:
 - Number of scanned **Shiny Pokémon**
 
 **Data source:** `pokemon_hundo_stats` and `pokemon_shiny_stats` tables with `date` and `count` fields.  
-This CoverageMap is only compatible with [📍 Golbat](https://github.com/UnownHash/Golbat)
+The stats of the CoverageMap are only compatible with [📍 Golbat](https://github.com/UnownHash/Golbat)
 
 ## 📱 Mobile Features
 
