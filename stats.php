@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: application/json');
 $config = require 'config.php';
+$format = $config['date_format'] === 'US' ? 'm/d/Y' : 'd.m.Y';
+$timeFormat = $config['time_format'] === '12h' ? 'h:i A' : 'H:i:s';
 
 $host = $config['db_host'];
 $port = $config['db_port'];
@@ -31,6 +33,11 @@ try {
         ");
         $stmt4->execute([$area]);
         $total_area = $stmt4->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+        
+        
+        $stmtDistinct = $pdo->prepare("SELECT COUNT(DISTINCT pokemon_id) as total FROM pokemon_shiny_stats WHERE date = CURDATE() AND area = ?");
+$stmtDistinct->execute([$area]);
+$distinct_shiny = $stmtDistinct->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
         $total_world = null; 
     } else {
@@ -45,21 +52,23 @@ try {
         $stmt3 = $pdo->prepare("SELECT SUM(count) as total FROM pokemon_stats WHERE date = CURDATE() AND area = 'world'");
         $stmt3->execute();
         $total_world = $stmt3->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+        
+        $stmtDistinct = $pdo->prepare("SELECT COUNT(DISTINCT pokemon_id) as total FROM pokemon_shiny_stats WHERE date = CURDATE()");
+$stmtDistinct->execute();
+$distinct_shiny = $stmtDistinct->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
         $total_area = null; 
     }
 
-$format = $config['date_format'] === 'US' ? 'm/d/Y' : 'd.m.Y';
-$timeFormat = $config['time_format'] === '12h' ? 'h:i A' : 'H:i:s';
-
 echo json_encode([
     'date' => date($format),
-    'time' => date('H:i:s'),
-        'hundo' => number_format($hundo),
-        'shiny' => number_format($shiny),
-        'total_world' => $total_world !== null ? number_format($total_world) : null,
-        'total_area' => $total_area !== null ? number_format($total_area) : null
-    ]);
+    'time' => date($timeFormat),
+    'hundo' => number_format($hundo),
+    'shiny' => number_format($shiny),
+    'distinct_shiny' => $distinct_shiny,
+    'total_world' => $total_world !== null ? number_format($total_world) : null,
+    'total_area' => $total_area !== null ? number_format($total_area) : null
+]);
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['error' => 'DB Fehler: ' . $e->getMessage()]);

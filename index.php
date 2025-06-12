@@ -43,8 +43,9 @@ $features = loadCachedAreas($config);
     html, body { margin: 0; height: 100%; font-family: sans-serif; transition: background 0.3s, color 0.3s; }
     #map { position: absolute; top: 60px; bottom: 0; width: 100%; }
 
-    header {
-      height: 60px;
+header {
+  position: relative; /* NEU */
+  height: 60px;
       background: #f4f4f4;
       display: flex;
       align-items: center;
@@ -58,8 +59,34 @@ $features = loadCachedAreas($config);
       z-index: 2000;
     }
 
-    header img { height: 40px; }
-    .header-buttons { display: flex; gap: 10px; }
+    header img {
+      height: 40px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+.location-menu {
+  position: absolute;
+  top: 60px; /* gleiche Höhe wie dein Header */
+  left: 15px;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 2500;
+  padding: 5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: none;
+}
+
+.location-menu select {
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-left: 10px;
+}
 
     .menu-toggle {
       background: transparent;
@@ -72,10 +99,64 @@ $features = loadCachedAreas($config);
       transition: all 0.3s ease;
     }
 
-    .menu-toggle.active { background: #0077cc; color: white; border-color: #0077cc; }
+.dark .dropdown .menu-toggle,
+.dark .menu-toggle {
+  color: #fff !important;
+}
 
-    .panel, .sidebar { display: none; }
-    .panel.open, .sidebar.open { display: block; }
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 55px;
+  right: 10px;
+  background: white;
+  z-index: 9999;
+  padding: 5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.dropdown-menu.show {
+  max-height: 500px;
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.dropdown-menu .dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.dark .dropdown-menu {
+  background: #2a2a2a;
+  color: #eee;
+}
+
+.dark .dropdown-menu .dropdown-item:hover {
+  background: #444;
+}
+
+    .menu-toggle.active {
+      background: #0077cc;
+      color: white;
+      border-color: #0077cc;
+    }
+
+    .panel, .sidebar {
+      display: none;
+    }
+    .panel.open, .sidebar.open {
+      display: block;
+    }
 
     .panel, .sidebar {
       position: fixed;
@@ -88,14 +169,34 @@ $features = loadCachedAreas($config);
       box-shadow: -2px 0 6px rgba(0,0,0,0.2);
     }
 
-    .sidebar {
-      height: calc(100% - 60px);
-      overflow-y: auto;
-    }
+.sidebar {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  bottom: 0;
+  overflow-y: auto;
+  background: white;
+  z-index: 1600;
+  padding: 15px;
+  box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+}
 
-    .dark { background: #1e1e1e; color: #eee; }
-    .dark header { background: #2a2a2a; }
-    .dark .panel, .dark .sidebar { background: #2a2a2a; color: #eee; }
+.dropdown-menu.show {
+  display: block;
+}
+
+    .dark {
+      background: #1e1e1e;
+      color: #eee;
+    }
+    .dark header {
+      background: #2a2a2a;
+    }
+    .dark .panel, .dark .sidebar {
+      background: #2a2a2a;
+      color: #eee;
+    }
 
     input[type="text"] {
       width: 100%;
@@ -107,67 +208,57 @@ $features = loadCachedAreas($config);
     li { margin-bottom: 5px; cursor: pointer; }
 
     .tooltip-label {
-      background: rgba(0, 0, 0, 1);
+      background: rgba(0, 0, 0, 0.7);
       color: white;
       padding: 3px 6px;
       border-radius: 3px;
       font-size: 12px;
       pointer-events: none;
     }
-
+    
     .slider-toggle-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 24px;
-    }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px; width: 18px;
-      left: 3px; bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-    input:checked + .slider { background-color: #0077cc; }
-    input:checked + .slider:before { transform: translateX(22px); }
-
-    .dropdown { position: relative; display: inline-block; }
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 60px;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 3000;
-      padding: 5px 0;
-      border-radius: 5px;
-      margin-top: 5px;
-    }
-    .dropdown.open .dropdown-menu { display: block; }
-    .dropdown-item {
-      padding: 8px 15px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .dropdown-item:hover { background: #f0f0f0; }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #0077cc;
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
   </style>
 </head>
 <body>
@@ -202,9 +293,10 @@ $features = loadCachedAreas($config);
   <div class="panel" id="stats-panel">
     <h3>Daily Stats</h3>
     <div id="stat-time">⏳ Loading...</div>
+     <div><strong>📈 Total Scanned:</strong> <span id="stat-total">-</span></div>
     <div><strong>💯 Pokemon:</strong> <span id="stat-hundo">-</span></div>
-    <div><strong>✨ Pokemon:</strong> <span id="stat-shiny">-</span></div>
-    <div><strong>📈 Total:</strong> <span id="stat-total">-</span></div>
+    <div><strong>✨ Total Shinys:</strong> <span id="stat-shiny">-</span></div>
+    <div><strong> ✨ Shiny Types:</strong> <span id="stat-distinct-shiny">-</span></div>
   </div>
 
   <div class="sidebar" id="sidebar">
@@ -250,9 +342,10 @@ $features = loadCachedAreas($config);
           .then(res => res.json())
           .then(data => {
             document.getElementById("stat-time").textContent = `📅 ${data.date} ⏰ ${data.time}`;
-            document.getElementById("stat-hundo").textContent = data.hundo;
-            document.getElementById("stat-shiny").textContent = data.shiny;
-            document.getElementById("stat-total").textContent = data.total_world;
+document.getElementById("stat-hundo").textContent = data.hundo;
+document.getElementById("stat-shiny").textContent = data.shiny;
+document.getElementById("stat-total").textContent = data.total_world;
+document.getElementById("stat-distinct-shiny").textContent = data.distinct_shiny;
           });
       }
     }
