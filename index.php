@@ -2,6 +2,9 @@
 $config = require 'config.php';
 $title = $config['page_title'] ?? 'Geofence Map';
 $logo = $config['logo_url'] ?? '';
+$locale = $config['locale'] ?? 'en';
+$langPath = __DIR__ . "/lang/{$locale}.json";
+$lang = file_exists($langPath) ? json_decode(file_get_contents($langPath), true) : [];
 
 function loadCachedAreas($config) {
     $cacheFile = __DIR__ . '/areas_cache.json';
@@ -68,19 +71,6 @@ header {
       gap: 10px;
     }
 
-.location-menu {
-  position: absolute;
-  top: 60px; /* gleiche Höhe wie dein Header */
-  left: 15px;
-  background: white;
-  border: 1px solid #ccc;
-  z-index: 2500;
-  padding: 5px;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  display: none;
-}
-
 .location-menu select {
   padding: 6px;
   border-radius: 4px;
@@ -109,15 +99,20 @@ header {
 }
 
 .dropdown-menu {
-  display: none;
   position: absolute;
-  top: 55px;
-  right: 10px;
+  top: 150%; /* exakt unter dem Button */
+  left: 0;
+  right: auto;
+  z-index: 3000;
   background: white;
-  z-index: 9999;
-  padding: 5px;
-  border-radius: 4px;
+  padding: 10px;
+  border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block;
 }
 
 .dropdown-menu.show {
@@ -271,16 +266,16 @@ input:checked + .slider:before {
       <?php endif; ?>
 
       <?php if (!empty($config['locations'])): ?>
-        <div class="dropdown">
-          <button id="location-toggle" class="menu-toggle">📍 Select a City</button>
-          <div id="location-menu" class="dropdown-menu">
-            <?php foreach ($config['locations'] as $loc): ?>
-              <div class="dropdown-item" data-lat="<?= $loc['lat'] ?>" data-lng="<?= $loc['lng'] ?>">
-                <?= htmlspecialchars($loc['name']) ?>
-              </div>
-            <?php endforeach; ?>
-          </div>
-        </div>
+       <div class="dropdown" style="position: relative;">
+<button id="location-toggle" class="menu-toggle">📍 <?= $lang['select_city'] ?? 'Select a City' ?></button>
+  <div id="location-menu" class="dropdown-menu">
+    <?php foreach ($config['locations'] as $loc): ?>
+      <div class="dropdown-item" data-lat="<?= $loc['lat'] ?>" data-lng="<?= $loc['lng'] ?>">
+        <?= htmlspecialchars($loc['name']) ?>
+      </div>
+    <?php endforeach; ?>
+  </div>
+</div>
       <?php endif; ?>
     </div>
 
@@ -291,27 +286,32 @@ input:checked + .slider:before {
     </div>
   </header>
   <div class="panel" id="stats-panel">
-    <h3>Daily Stats</h3>
+   <h3><?= $lang['daily_stats'] ?? 'Daily Stats' ?></h3>
     <div id="stat-time">⏳ Loading...</div>
-     <div><strong>📈 Total Scanned:</strong> <span id="stat-total">-</span></div>
-    <div><strong>💯 Pokemon:</strong> <span id="stat-hundo">-</span></div>
-    <div><strong>✨ Total Shinys:</strong> <span id="stat-shiny">-</span></div>
-    <div><strong> ✨ Shiny Types:</strong> <span id="stat-distinct-shiny">-</span></div>
+     <div><strong>📈 <?= $lang['total_scanned'] ?? 'Total Scanned' ?>:</strong> <span id="stat-total">-</span></div>
+    <div>
+  <strong>💯 Pokémon</strong><br>
+  <span id="stat-hundo">-</span>
+</div>
+    <div><strong>✨ Shinys</strong><br>
+     <span id="stat-shiny">-</span></div>
   </div>
 
   <div class="sidebar" id="sidebar">
-    <h3>Areas</h3>
+    <h3><?= $lang['areas'] ?? 'Areas' ?></h3>
     <input type="text" id="search" placeholder="Suchen..." />
     <div class="slider-toggle-wrapper">
       <label class="switch">
         <input type="checkbox" id="toggle-all" checked>
         <span class="slider"></span>
       </label>
-      <span id="toggle-all-label">Show all areas</span>
+      <span id="toggle-all-label"><?= $lang['show_all_areas'] ?? 'Show all areas' ?></span>
     </div>
     <ul id="geofence-list"></ul>
   </div>
-
+<script>
+  const lang = <?= json_encode($lang) ?>;
+</script>
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
@@ -342,8 +342,8 @@ input:checked + .slider:before {
           .then(res => res.json())
           .then(data => {
             document.getElementById("stat-time").textContent = `📅 ${data.date} ⏰ ${data.time}`;
-document.getElementById("stat-hundo").textContent = data.hundo;
-document.getElementById("stat-shiny").textContent = data.shiny;
+document.getElementById("stat-hundo").textContent = `${data.distinct_hundo} ${lang.species || 'Spezies'} | ${data.hundo} ${lang.total || 'Total'}`;
+document.getElementById("stat-shiny").textContent = `${data.distinct_shiny} ${lang.species || 'Spezies'} | ${data.shiny} ${lang.total || 'Total'}`;
 document.getElementById("stat-total").textContent = data.total_world;
 document.getElementById("stat-distinct-shiny").textContent = data.distinct_shiny;
           });

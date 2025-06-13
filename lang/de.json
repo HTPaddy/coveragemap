@@ -1,0 +1,12 @@
+{
+  "select_city": "Stadt wählen",
+  "daily_stats": "Tages Statistik",
+  "areas": "Gebiete",
+  "species": "Spezies",
+  "total": "Total",
+  "total_scanned": "Total Gescannt",
+  "hundo_pokemon": "💯 Pokémon",
+  "total_shinies": "✨ Total Shinys",
+  "distinct_shiny": "✨ Shiny Typen",
+  "show_all_areas": "Alle Gebiete anzeigen"
+}
