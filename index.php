@@ -167,7 +167,7 @@ header {
 .sidebar {
   position: fixed;
   top: 60px;
-  right: 0;
+  right: 1px;
   width: 300px;
   bottom: 0;
   overflow-y: auto;
@@ -194,8 +194,8 @@ header {
     }
 
     input[type="text"] {
-      width: 100%;
-      padding: 5px;
+  width: calc(100% - 10px);
+  padding: 5px;
       margin-bottom: 10px;
     }
 
