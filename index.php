@@ -168,7 +168,7 @@ header {
   position: fixed;
   top: 60px;
   right: 1px;
-  width: 300px;
+  width: 250px;
   bottom: 0;
   overflow-y: auto;
   background: white;
@@ -270,9 +270,12 @@ input:checked + .slider:before {
 <button id="location-toggle" class="menu-toggle">📍 <?= $lang['select_city'] ?? 'Select a City' ?></button>
   <div id="location-menu" class="dropdown-menu">
     <?php foreach ($config['locations'] as $loc): ?>
-      <div class="dropdown-item" data-lat="<?= $loc['lat'] ?>" data-lng="<?= $loc['lng'] ?>">
-        <?= htmlspecialchars($loc['name']) ?>
-      </div>
+      <div class="dropdown-item"
+       data-lat="<?= $loc['lat'] ?>"
+       data-lng="<?= $loc['lng'] ?>"
+       data-zoom="<?= $loc['zoom'] ?? 13 ?>">
+    <?= htmlspecialchars($loc['name']) ?>
+  </div>
     <?php endforeach; ?>
   </div>
 </div>
@@ -465,10 +468,12 @@ if (locationToggle && locationMenu) {
     item.addEventListener('click', () => {
       const lat = parseFloat(item.dataset.lat);
       const lng = parseFloat(item.dataset.lng);
-      map.setView([lat, lng], 13); // Zoomstufe kannst du anpassen
-      locationMenu.style.display = 'none';
-    });
+      const zoom = parseInt(item.dataset.zoom) || 13; // Fallback-Zoom
+
+    map.setView([lat, lng], zoom);
+    locationMenu.style.display = 'none';
   });
+});
 
   // Menü schließen, wenn man außerhalb klickt
   document.addEventListener('click', (e) => {
