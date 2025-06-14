@@ -38,6 +38,18 @@ $features = loadCachedAreas($config);
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <script>
+    if (sessionStorage.getItem('popupSeen')) {
+      document.documentElement.classList.add('popup-hidden');
+    }
+  </script>
+
+  <style>
+    .popup-hidden #popup-overlay {
+      display: none !important;
+    }
+  </style>
+  
   <meta charset="UTF-8" />
   <title><?= htmlspecialchars($title) ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -203,7 +215,7 @@ header {
     li { margin-bottom: 5px; cursor: pointer; }
 
     .tooltip-label {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.9);
       color: white;
       padding: 3px 6px;
       border-radius: 3px;
@@ -316,6 +328,9 @@ input:checked + .slider:before {
   const lang = <?= json_encode($lang) ?>;
 </script>
   <div id="map"></div>
+
+   <!-- Jetzt korrekt platziert -->
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     const map = L.map('map').setView(
@@ -352,6 +367,7 @@ document.getElementById("stat-distinct-shiny").textContent = data.distinct_shiny
           });
       }
     }
+    
 
     function toggleDark(btn) {
       isDark = !isDark;
@@ -483,5 +499,51 @@ if (locationToggle && locationMenu) {
   });
 }
   </script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const popup = document.getElementById('popup-overlay');
+      const confirmButton = document.getElementById('popup-confirm');
+
+      console.log("Confirm Button gefunden:", confirmButton);
+
+      if (sessionStorage.getItem('popupSeen')) {
+        if (popup) popup.remove();
+      } else {
+        if (confirmButton) {
+          confirmButton.addEventListener('click', () => {
+            console.log("Button geklickt – Popup wird entfernt");
+            sessionStorage.setItem('popupSeen', 'true');
+            popup.remove();
+          });
+        } else {
+          console.warn("popup-confirm nicht gefunden!");
+        }
+      }
+    });
+  </script>
+<?php include 'popup.php'; ?>
+<script>
+  // Sicherheit: sobald DOM "readystate" >= interactive, führe Code aus
+  function initPopup() {
+    const popup = document.getElementById('popup-overlay');
+    const confirm = document.getElementById('popup-confirm');
+    if (!popup || !confirm) return console.warn("popup nicht gefunden");
+
+    if (sessionStorage.getItem('popupSeen')) {
+      popup.remove();
+    } else {
+      confirm.addEventListener('click', () => {
+        sessionStorage.setItem('popupSeen','true');
+        popup.remove();
+      });
+    }
+  }
+  if (document.readyState !== 'loading') {
+    initPopup();
+  } else {
+    document.addEventListener('DOMContentLoaded', initPopup);
+  }
+</script>
+
 </body>
 </html>
