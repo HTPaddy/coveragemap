@@ -2,6 +2,8 @@
 return [
     'page_title' => 'Coverage Map',
     'api_url' => 'http://{koji_url}/api/v1/geofence/feature-collection/{dragonite_project}',
+    'golbat_api_url' => 'http://127.0.0.1:port',
+    'golbat_api_secret' => 'your_secret',
     'bearer_token' => 'koji_secret',
     'logo_url' => 'your_logo_url',
     'tile_url_light' => 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',

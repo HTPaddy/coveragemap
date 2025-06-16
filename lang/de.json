@@ -1,12 +1,14 @@
 {
   "select_city": "Stadt wählen",
-  "daily_stats": "Tages Statistik",
+  "daily_stats": "Tagesstatistik",
   "areas": "Gebiete",
   "species": "Spezies",
-  "total": "Total",
-  "total_scanned": "Total Gescannt",
+  "total": "Gesamt",
+  "active": "Aktiv",
+  "search": "Suchen...",
+  "total_scanned": "Insgesamt Gescannt",
   "hundo_pokemon": "💯 Pokémon",
-  "total_shinies": "✨ Total Shinys",
+  "total_shinies": "✨ Gesamt Shinys",
   "distinct_shiny": "✨ Shiny Typen",
   "show_all_areas": "Alle Gebiete anzeigen"
 }

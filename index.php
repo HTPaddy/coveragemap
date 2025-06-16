@@ -176,10 +176,49 @@ header {
       box-shadow: -2px 0 6px rgba(0,0,0,0.2);
     }
 
+.parent-header {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 20px;
+  margin: 4px 0;
+  cursor: pointer;
+  display: inline-block;
+  background-color: white;
+  color: black;
+  transition: background 0.3s, color 0.3s;
+}
+
+.parent-header.active {
+  background-color: #0077cc;
+  color: white;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+  margin-right: 5px;
+}
+
+.arrow.rotated {
+  transform: rotate(90deg);
+}
+
+.dark .parent-header {
+  background: #333 !important;  /* Dunkler Hintergrund im Darkmode */
+  color: #fff !important;       /* Helle Schrift */
+  border: 1px solid #555;
+}
+
+.dark .parent-header.active {
+  background: #0077cc !important;  /* Aktive Gruppe bleibt blau */
+  color: #fff !important;
+}
+
 .sidebar {
   position: fixed;
   top: 60px;
-  right: 1px;
+  right: 0px;
   width: 250px;
   bottom: 0;
   overflow-y: auto;
@@ -206,6 +245,7 @@ header {
     }
 
     input[type="text"] {
+    font-size: 16px;
   width: calc(100% - 10px);
   padding: 5px;
       margin-bottom: 10px;
@@ -300,21 +340,30 @@ input:checked + .slider:before {
       <button class="menu-toggle" id="menu-btn" onclick="toggleSidebar(this)">☰</button>
     </div>
   </header>
-  <div class="panel" id="stats-panel">
-   <h3><?= $lang['daily_stats'] ?? 'Daily Stats' ?></h3>
-    <div id="stat-time">⏳ Loading...</div>
-     <div><strong>📈 <?= $lang['total_scanned'] ?? 'Total Scanned' ?>:</strong> <span id="stat-total">-</span></div>
-    <div>
-  <strong>💯 Pokémon</strong><br>
+<div class="panel" id="stats-panel">
+  <h3><?= $lang['daily_stats'] ?? 'Daily Stats' ?></h3>
+
+  <div id="stat-time">⏳ Loading...</div>
+
+  <div>
+    <strong>📈 <?= $lang['total_scanned'] ?? 'Total Gescannt' ?></strong><br>
+    <span id="stat-total">-</span>
+  </div>
+
+  <div>
+    <strong>💯 Pokémon</strong><br>
   <span id="stat-hundo">-</span>
 </div>
-    <div><strong>✨ Shinys</strong><br>
-     <span id="stat-shiny">-</span></div>
+
+  <div>
+    <strong>✨ Shinys</strong><br>
+    <span id="stat-shiny">-</span>
   </div>
+</div>
 
   <div class="sidebar" id="sidebar">
     <h3><?= $lang['areas'] ?? 'Areas' ?></h3>
-    <input type="text" id="search" placeholder="Suchen..." />
+    <input type="text" id="search" placeholder="<?= $lang['search'] ?? 'Suchen...' ?>" />
     <div class="slider-toggle-wrapper">
       <label class="switch">
         <input type="checkbox" id="toggle-all" checked>
@@ -346,38 +395,44 @@ input:checked + .slider:before {
     const geoLayers = [], allDrawColors = [], allLi = [];
     const list = document.getElementById('geofence-list');
 
-    function toggleStats(btn) {
-      const panel = document.getElementById('stats-panel');
-      const sidebar = document.getElementById('sidebar');
-      const show = !panel.classList.contains('open');
-      panel.classList.toggle('open', show);
-      sidebar.classList.remove('open');
-      document.getElementById('menu-btn').classList.remove('active');
-      btn.classList.toggle('active', show);
+function toggleStats(btn) {
+  const panel = document.getElementById('stats-panel');
+  const sidebar = document.getElementById('sidebar');
+  const show = !panel.classList.contains('open');
+  panel.classList.toggle('open', show);
+  sidebar.classList.remove('open');
+  document.getElementById('menu-btn').classList.remove('active');
+  btn.classList.toggle('active', show);
 
-      if (show) {
-        fetch('stats.php')
-          .then(res => res.json())
-          .then(data => {
-            document.getElementById("stat-time").textContent = `📅 ${data.date} ⏰ ${data.time}`;
-document.getElementById("stat-hundo").textContent = `${data.distinct_hundo} ${lang.species || 'Spezies'} | ${data.hundo} ${lang.total || 'Total'}`;
-document.getElementById("stat-shiny").textContent = `${data.distinct_shiny} ${lang.species || 'Spezies'} | ${data.shiny} ${lang.total || 'Total'}`;
-document.getElementById("stat-total").textContent = data.total_world;
-document.getElementById("stat-distinct-shiny").textContent = data.distinct_shiny;
-          });
-      }
-    }
+  if (show) {
+    fetch('stats.php')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("stat-hundo").textContent = `${data.active_hundos} ${lang.active || 'Active'} | ${data.distinct_hundo} ${lang.species || 'Spezies'} | ${data.hundo} ${lang.total || 'Total'}`;
+        document.getElementById("stat-shiny").textContent = `${data.distinct_shiny} ${lang.species || 'Spezies'} | ${data.shiny} ${lang.total || 'Total'}`;
+        document.getElementById('stat-total').textContent = data.total_world || data.total_area;
+        document.getElementById("stat-time").textContent = `📅 ${data.date} ⏰ ${data.time}`;
+        // document.getElementById('stat-active-hundo').textContent = data.active_hundos ?? '-';
+      })
+      .catch(err => {
+        console.error('Fehler beim Laden der Stats:', err);
+      });
+  }
+}
     
 
     function toggleDark(btn) {
-      isDark = !isDark;
-      document.body.classList.toggle('dark', isDark);
-      map.removeLayer(tileLayer);
-      tileLayer = L.tileLayer(isDark ? tileDark : tileLight, {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-      btn.classList.toggle('active', isDark);
-    }
+  isDark = !isDark;
+  document.body.classList.toggle('dark', isDark);
+  map.removeLayer(tileLayer);
+  tileLayer = L.tileLayer(isDark ? tileDark : tileLight, {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+  btn.classList.toggle('active', isDark);
+
+  // 🔁 Geofences neu zeichnen mit neuen Farben
+  drawAllVisible();
+}
 
     function toggleSidebar(btn) {
       const sidebar = document.getElementById('sidebar');
@@ -394,10 +449,16 @@ document.getElementById("stat-distinct-shiny").textContent = data.distinct_shiny
       geoLayers.length = 0;
     }
 
-    function drawFeature(f, color, i) {
-      const layer = L.geoJSON(f, {
-        style: { color, fillColor: color, fillOpacity: 0.1, weight: 2 }
-      }).addTo(map);
+function drawFeature(f, color, i) {
+  const layer = L.geoJSON(f, {
+    style: { 
+      color: isDark ? 'white' : 'black',          	// Linienfarbe (Rand)
+      fillColor: color,       						// Füllfarbe
+      fillOpacity: isDark ? 0.4 : 0.2,      						// Dynamisch je nach Modus
+      weightOpacity: 1 ,   						// Linienddichte
+      weight: 2            							// Liniendicke
+    }
+  }).addTo(map);
       const tooltip = L.tooltip({ permanent: false, direction: 'top', className: 'tooltip-label', sticky: true }).setContent(f.properties.name);
       layer.on('mouseover', () => layer.bindTooltip(tooltip).openTooltip());
       layer.on('mouseout', () => layer.closeTooltip());
@@ -442,15 +503,58 @@ document.getElementById("stat-distinct-shiny").textContent = data.distinct_shiny
       li.addEventListener('click', () => map.fitBounds(geoLayers[i].getBounds()));
     });
 
-    document.getElementById('search').addEventListener('input', function() {
-      const value = this.value.toLowerCase();
-      list.innerHTML = '';
-      features.forEach((f, i) => {
-        if (f.properties.name.toLowerCase().includes(value)) {
-          list.appendChild(allLi[i]);
-        }
-      });
+    document.getElementById('search').addEventListener('input', function () {
+  const value = this.value.toLowerCase();
+  const groupContainer = document.getElementById('geofence-list');
+  groupContainer.innerHTML = '';
+
+  if (value === '') {
+    // 👉 Gruppierung neu aufbauen
+    const grouped = {};
+    features.forEach((f, i) => {
+      const parent = f.properties.parent || 'Andere';
+      if (!grouped[parent]) grouped[parent] = [];
+      grouped[parent].push({ feature: f, index: i });
     });
+
+    Object.entries(grouped).forEach(([parent, items]) => {
+      const groupDiv = document.createElement('div');
+      const header = document.createElement('h4');
+      header.innerHTML = `<span class="arrow">&#9654;</span> ${parent}`;
+      header.classList.add('parent-header');
+      header.style.cursor = 'pointer';
+      header.style.margin = '10px 0';
+      header.style.userSelect = 'none';
+
+      const listDiv = document.createElement('ul');
+      listDiv.style.paddingLeft = '15px';
+      listDiv.style.display = 'none';
+
+      header.addEventListener('click', () => {
+        const visible = listDiv.style.display === 'block';
+        listDiv.style.display = visible ? 'none' : 'block';
+        header.classList.toggle('active', !visible);
+        header.querySelector('.arrow').style.transform = !visible ? 'rotate(90deg)' : 'rotate(0deg)';
+      });
+
+      items.forEach(({ feature, index }) => {
+        const li = allLi[index];
+        listDiv.appendChild(li);
+      });
+
+      groupDiv.appendChild(header);
+      groupDiv.appendChild(listDiv);
+      groupContainer.appendChild(groupDiv);
+    });
+  } else {
+    // 🔍 Suche filtern, flach anzeigen
+    features.forEach((f, i) => {
+      if (f.properties.name.toLowerCase().includes(value)) {
+        groupContainer.appendChild(allLi[i]);
+      }
+    });
+  }
+});
 
     document.getElementById('toggle-all')?.addEventListener('change', function () {
       const check = this.checked;
@@ -520,6 +624,119 @@ if (locationToggle && locationMenu) {
         }
       }
     });
+// 🧩 Parent-Gruppierung einfügen (füge das NACH dem Laden von `features` ein)
+const groupContainer = document.getElementById('geofence-list');
+groupContainer.innerHTML = '';
+
+const geofenceGroups = {};
+features.forEach((f, i) => {
+  const parent = f.properties.parent || 'Andere';
+  if (!geofenceGroups[parent]) geofenceGroups[parent] = [];
+  geofenceGroups[parent].push({ feature: f, index: i });
+});
+
+Object.entries(geofenceGroups).forEach(([parent, items]) => {
+  const groupDiv = document.createElement('div');
+  const header = document.createElement('h4');
+  header.innerHTML = `<span class="arrow">&#9654;</span> ${parent}`;
+  header.classList.add('parent-header'); // 👈 CSS-Klasse mit Style übernehmen
+
+  const listDiv = document.createElement('ul');
+  listDiv.style.paddingLeft = '15px';
+  listDiv.style.display = 'none'; // Standardmäßig zugeklappt
+
+header.addEventListener('click', () => {
+  const isVisible = listDiv.style.display === 'block';
+  listDiv.style.display = isVisible ? 'none' : 'block';
+  header.classList.toggle('active', !isVisible);
+
+  const arrow = header.querySelector('.arrow');
+  arrow.classList.toggle('rotated', !isVisible);
+});
+
+let highlightOverlay = null;
+let highlightTimeout = null;
+
+items.forEach(({ feature, index }) => {
+  const li = document.createElement('li');
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = true;
+  checkbox.id = 'cb' + index;
+
+  const nameSpan = document.createElement('span');
+  nameSpan.textContent = ' ' + feature.properties.name;
+  nameSpan.style.cursor = 'pointer';
+
+  li.appendChild(checkbox);
+  li.appendChild(nameSpan);
+  listDiv.appendChild(li);
+
+  // Sichtbarkeit durch Checkbox
+  checkbox.addEventListener('change', drawAllVisible);
+
+  // Klick auf Name: Zoom + Highlight
+  nameSpan.addEventListener('click', () => {
+    const layer = geoLayers[index];
+    if (!layer) return;
+
+    map.fitBounds(layer.getBounds(), { maxZoom: 15 });
+
+    // Vorheriges Highlight entfernen
+    if (highlightOverlay) {
+      map.removeLayer(highlightOverlay);
+      highlightOverlay = null;
+    }
+    if (highlightTimeout) {
+      clearTimeout(highlightTimeout);
+      highlightTimeout = null;
+    }
+
+    // Neuen Overlay-Layer drüberlegen
+    highlightOverlay = L.geoJSON(feature, {
+      style: {
+        color: '#ff0000',
+        weight: 4,
+        fillOpacity: 0.0,
+        dashArray: '5,5'
+      },
+      interactive: false
+    }).addTo(map);
+
+    // Nach 15 Sekunden wieder entfernen
+    highlightTimeout = setTimeout(() => {
+      if (highlightOverlay) {
+        map.removeLayer(highlightOverlay);
+        highlightOverlay = null;
+      }
+    }, 5000);
+  });
+});
+
+  groupDiv.appendChild(header);
+  groupDiv.appendChild(listDiv);
+  groupContainer.appendChild(groupDiv);
+});
+document.addEventListener('click', function(e) {
+  const sidebar = document.getElementById('sidebar');
+  const statsPanel = document.getElementById('stats-panel');
+  const menuBtn = document.getElementById('menu-btn');
+  const statBtn = document.getElementById('stat-btn');
+
+  const clickedInsideSidebar = sidebar.contains(e.target) || menuBtn.contains(e.target);
+  const clickedInsideStats = statsPanel.contains(e.target) || statBtn.contains(e.target);
+
+  if (!clickedInsideSidebar) {
+    sidebar.classList.remove('open');
+    menuBtn.classList.remove('active');
+  }
+
+  if (!clickedInsideStats) {
+    statsPanel.classList.remove('open');
+    statBtn.classList.remove('active');
+  }
+});
   </script>
 <?php include 'popup.php'; ?>
 <script>
