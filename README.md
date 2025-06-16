@@ -94,3 +94,38 @@ http://localhost:8000/ -> http://localhost:80
 
 Thanks to [ReuschelCGN](https://github.com/ReuschelCGN) for the docker files
 Main idea of this comes from [VersX](https://github.com/versx)
+
+
+
+```
+Update from 12.06.2025
+- Stats per Area ( click on the Geofence )
+- distinct shiny stats
+- now it generates a areas_cache.json once a week to not penetrate Koji with every refresh of the site
+- Set time / Date between EU/US in config
+- fixed area menu 
+- fixed location menu
+-----------------------
+
+Update from 13.06.2025
+- Language config Option ( de / en )
+
+-----------------------
+Update from 14.06.2025
+- zoom fix for location menu 
+- popup window with option for Discord Link
+  - popup_config.example.php got added (by default it´s disabled)
+
+The Pop up appears the first time you open the Page or in a new tab. (not on refresh) 
+
+-------------------------
+Update from 16.06.2025
+- added live active count of 100% pokemon ( check Config.example ) 
+- changed the view of Geofences in Light / Dark mode for better visibility
+- added grouping by Parent of Koji ( you have to delete your area_cache.json first to make changes visible ) 
+- fixed search bar zooming in mobile
+- added highlighting when you click a area in the menu
+- the highlighting fades out after 5 seconds
+- when you click a area in the menu it not gets disabled anymore, you have to click the checkbox to disbale/enable the area
+- and more little fixes
+```
