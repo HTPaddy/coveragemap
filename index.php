@@ -635,7 +635,9 @@ features.forEach((f, i) => {
   geofenceGroups[parent].push({ feature: f, index: i });
 });
 
-Object.entries(geofenceGroups).forEach(([parent, items]) => {
+Object.entries(geofenceGroups)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .forEach(([parent, items]) => {
   const groupDiv = document.createElement('div');
   const header = document.createElement('h4');
   header.innerHTML = `<span class="arrow">&#9654;</span> ${parent}`;
