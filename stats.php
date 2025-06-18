@@ -15,7 +15,7 @@ function fetchActiveHundos($golbatUrl, $secret) {
     $url = rtrim($golbatUrl, '/') . '/api/pokemon/v2/scan';
 
     $payload = json_encode([
-        'min' => ['latitude' => 0, 'longitude' => 0],
+        'min' => ['latitude' => -90, 'longitude' => -180],
         'max' => ['latitude' => 90, 'longitude' => 180],
         'filters' => [[
             'pokemon' => array_map(fn($id) => ['id' => $id], range(1, 1015)),
