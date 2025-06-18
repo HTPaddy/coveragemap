@@ -45,7 +45,7 @@ try {
     $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $area = $_GET['area'] ?? null;
+    $area = $_GET['area'] ?? 'world';
 
     if ($area) {
         $stmt1 = $pdo->prepare("SELECT SUM(count) as total FROM pokemon_hundo_stats WHERE date = CURDATE() AND area = ?");
